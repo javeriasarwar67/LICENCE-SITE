@@ -182,10 +182,12 @@
 }
 
 /* hCaptcha widget spacing */
-.h-captcha {
-  margin: 4px 0;
+.apply-captcha-wrapper {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  margin: 4px 0;
 }
 
 /* Submit button */

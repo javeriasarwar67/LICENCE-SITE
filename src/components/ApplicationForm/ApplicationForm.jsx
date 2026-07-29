@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import {
   HiOutlineUser,
   HiOutlineEnvelope,
@@ -7,6 +7,7 @@ import {
   HiOutlineCloudArrowUp,
   HiOutlineCheckCircle,
 } from "react-icons/hi2";
+import HCaptcha from "@hcaptcha/react-hcaptcha";
 import "./ApplicationForm.css";
 
 const SERVICES = [
@@ -24,6 +25,9 @@ export default function ApplicationForm() {
   const [service, setService] = useState("");
   const [status, setStatus] = useState("idle"); // idle | sending | success | error
   const [fileName, setFileName] = useState("");
+  const [captchaToken, setCaptchaToken] = useState("");
+  const [captchaError, setCaptchaError] = useState("");
+  const captchaRef = useRef(null);
 
   const handleFileChange = (e) => {
     const files = e.target.files;
@@ -38,10 +42,17 @@ export default function ApplicationForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!captchaToken) {
+      setCaptchaError("Please verify that you are human.");
+      return;
+    }
+    setCaptchaError("");
     setStatus("sending");
 
     const formData = new FormData(e.target);
     formData.append("access_key", WEB3FORMS_ACCESS_KEY);
+    formData.append("h-captcha-response", captchaToken);
 
     try {
       const response = await fetch("https://api.web3forms.com/submit", {
@@ -55,11 +66,17 @@ export default function ApplicationForm() {
         e.target.reset();
         setService("");
         setFileName("");
+        setCaptchaToken("");
+        captchaRef.current?.resetCaptcha();
       } else {
         setStatus("error");
+        captchaRef.current?.resetCaptcha();
+        setCaptchaToken("");
       }
     } catch (error) {
       setStatus("error");
+      captchaRef.current?.resetCaptcha();
+      setCaptchaToken("");
     }
   };
 
@@ -102,14 +119,12 @@ export default function ApplicationForm() {
         </div>
 
         <form className="apply-form" onSubmit={handleSubmit}>
-          {/* Hidden field for Web3Forms */}
           <input
             type="hidden"
             name="subject"
             value="New Application — The Lighthouse"
           />
 
-          {/* Personal Info */}
           <div className="apply-row">
             <div className="apply-field">
               <label>
@@ -147,7 +162,6 @@ export default function ApplicationForm() {
             />
           </div>
 
-          {/* Service selection */}
           <div className="apply-field">
             <label>
               <HiOutlineDocumentText size={16} /> Service Required
@@ -170,7 +184,6 @@ export default function ApplicationForm() {
             </select>
           </div>
 
-          {/* Conditional fields based on service */}
           {service === "trade-licence" && (
             <div className="apply-row apply-conditional">
               <div className="apply-field">
@@ -234,7 +247,6 @@ export default function ApplicationForm() {
             </div>
           )}
 
-          {/* Additional details */}
           <div className="apply-field">
             <label>Additional Details (optional)</label>
             <textarea
@@ -244,7 +256,6 @@ export default function ApplicationForm() {
             />
           </div>
 
-          {/* File upload */}
           <div className="apply-field">
             <label>
               <HiOutlineCloudArrowUp size={16} /> Upload Documents
@@ -264,8 +275,19 @@ export default function ApplicationForm() {
             </div>
           </div>
 
-          {/* hCaptcha widget */}
-          <div className="h-captcha" data-captcha="true"></div>
+          <div className="apply-captcha-wrapper">
+            <HCaptcha
+              ref={captchaRef}
+              sitekey={HCAPTCHA_SITE_KEY}
+              reCaptchaCompat={false}
+              onVerify={(token) => {
+                setCaptchaToken(token);
+                setCaptchaError("");
+              }}
+              onExpire={() => setCaptchaToken("")}
+            />
+            {captchaError && <p className="apply-error-msg">{captchaError}</p>}
+          </div>
 
           <button
             type="submit"
