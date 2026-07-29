@@ -5,6 +5,7 @@ import {
   HiArrowRight,
 } from "react-icons/hi2";
 import "./Hero.css";
+import { Link } from "react-router-dom";
 
 const QUICK_SERVICES = [
   { icon: <HiOutlineDocumentCheck size={20} />, label: "Trade Licence" },
@@ -35,9 +36,9 @@ export default function Hero() {
         </p>
 
         <div className="hero-actions">
-          <a href="#contact" className="btn-primary">
-            Get Started <HiArrowRight size={18} />
-          </a>
+          <Link to="/apply" className="btn-primary">
+              Get Started <HiArrowRight size={18} />
+          </Link>
           <a href="#services" className="btn-secondary">
             Explore Services
           </a>
