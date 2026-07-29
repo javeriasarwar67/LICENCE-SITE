@@ -4,7 +4,6 @@ import {
   HiOutlineEnvelope,
   HiOutlinePhone,
   HiOutlineDocumentText,
-  HiOutlineCloudArrowUp,
   HiOutlineCheckCircle,
 } from "react-icons/hi2";
 import HCaptcha from "@hcaptcha/react-hcaptcha";
@@ -24,21 +23,9 @@ const HCAPTCHA_SITE_KEY = "50b2fe65-b00b-4b9e-ad62-3ba471098be2";
 export default function ApplicationForm() {
   const [service, setService] = useState("");
   const [status, setStatus] = useState("idle"); // idle | sending | success | error
-  const [fileName, setFileName] = useState("");
   const [captchaToken, setCaptchaToken] = useState("");
   const [captchaError, setCaptchaError] = useState("");
   const captchaRef = useRef(null);
-
-  const handleFileChange = (e) => {
-    const files = e.target.files;
-    if (files.length === 0) {
-      setFileName("");
-    } else if (files.length === 1) {
-      setFileName(files[0].name);
-    } else {
-      setFileName(`${files.length} files selected`);
-    }
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -65,7 +52,6 @@ export default function ApplicationForm() {
         setStatus("success");
         e.target.reset();
         setService("");
-        setFileName("");
         setCaptchaToken("");
         captchaRef.current?.resetCaptcha();
       } else {
@@ -254,25 +240,6 @@ export default function ApplicationForm() {
               rows="4"
               placeholder="Any specific requirements or questions..."
             />
-          </div>
-
-          <div className="apply-field">
-            <label>
-              <HiOutlineCloudArrowUp size={16} /> Upload Documents
-            </label>
-            <div className="apply-file-upload">
-              <input
-                type="file"
-                name="attachment"
-                id="apply-file"
-                multiple
-                onChange={handleFileChange}
-              />
-              <label htmlFor="apply-file" className="apply-file-label">
-                <HiOutlineCloudArrowUp size={20} />
-                {fileName || "Click to upload (passport copy, photos, ID)"}
-              </label>
-            </div>
           </div>
 
           <div className="apply-captcha-wrapper">
