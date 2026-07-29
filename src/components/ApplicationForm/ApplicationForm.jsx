@@ -265,7 +265,7 @@ export default function ApplicationForm() {
           </div>
 
           {/* hCaptcha widget */}
-          <div className="h-captcha" data-sitekey={HCAPTCHA_SITE_KEY}></div>
+          <div className="h-captcha" data-captcha="true"></div>
 
           <button
             type="submit"
