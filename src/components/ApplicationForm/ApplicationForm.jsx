@@ -18,7 +18,7 @@ const SERVICES = [
 ];
 
 const WEB3FORMS_ACCESS_KEY = "6136904a-2b55-4364-b3af-5027b5b88c7d";
-const HCAPTCHA_SITE_KEY = "YOUR_SITE_KEY_HERE";
+const HCAPTCHA_SITE_KEY = "50b2fe65-b00b-4b9e-ad62-3ba471098be2";
 
 export default function ApplicationForm() {
   const [service, setService] = useState("");
